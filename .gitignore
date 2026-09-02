@@ -1,0 +1,22 @@
+# Node dependencies
+node_modules/
+
+# Rust / Tauri build cache
+src-tauri/target/
+src-tauri/gen/
+
+# Temporary files
+*.tmp
+*.log
+*.pdb
+
+# Local environment files
+.env
+.env.*
+!.env.example
+
+# IDE / OS metadata
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

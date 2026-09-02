@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>一键启动器</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="window">
+    <header class="titlebar" data-tauri-drag-region>
+      <div class="brand" data-tauri-drag-region><span class="logo">L</span><span data-tauri-drag-region>LaunchFlow</span></div>
+      <div class="window-actions">
+        <button class="title-btn" id="minimize" aria-label="最小化">—</button>
+        <button class="title-btn" id="maximize" aria-label="最大化">□</button>
+        <button class="title-btn close" id="close" aria-label="关闭">×</button>
+      </div>
+    </header>
+    <div class="layout">
+      <aside class="sidebar">
+        <div class="sidebar-head"><span>启动场景</span><button class="icon-btn" id="addProfile" title="新建配置">＋</button></div>
+        <nav id="profileList" class="profiles"></nav>
+        <div class="sidebar-foot">
+          <button class="nav-btn" id="settingsBtn"><span>⚙</span> 设置</button>
+          <div class="version">LaunchFlow · 2.0</div>
+        </div>
+      </aside>
+      <main class="main">
+        <section id="appsView" class="view active">
+          <div class="hero">
+            <div><div class="eyebrow">当前启动场景</div><h1 id="profileTitle">默认配置</h1><p id="profileSummary">0 个应用已就绪</p></div>
+            <button class="launch-btn" id="launchAll"><span class="play">▶</span><span><b>一键启动</b><small>运行此场景中的全部应用</small></span></button>
+          </div>
+          <div class="toolbar">
+            <div class="search-wrap"><span>⌕</span><input id="appSearch" placeholder="搜索当前场景中的应用" /></div>
+            <button class="secondary" id="installedAdd">＋ 从已安装应用添加</button>
+            <button class="primary" id="customAdd">＋ 自定义添加</button>
+          </div>
+          <div class="app-list" id="appList"></div>
+          <div class="empty" id="emptyState"><div class="empty-icon">✦</div><h2>构建你的启动场景</h2><p>从系统应用列表中选择，或自定义添加任意程序</p><button class="primary" id="emptyAdd">添加第一个应用</button></div>
+        </section>
+        <section id="settingsView" class="view">
+          <div class="settings-header"><div><div class="eyebrow">PREFERENCES</div><h1>设置</h1><p>调整开机启动和界面主题</p></div></div>
+          <div class="settings-grid">
+            <article class="setting-card"><div class="setting-icon purple">↻</div><div class="setting-copy"><h3>开机自启动本软件</h3><p>登录 Windows 后自动打开 LaunchFlow</p></div><label class="switch"><input id="startupToggle" type="checkbox"><span></span></label></article>
+            <article class="theme-card"><div><h3>界面主题</h3><p>选择最舒适的视觉模式</p></div><div class="theme-options">
+              <button data-theme="light"><i class="theme-preview light-preview"></i><span>浅色</span></button>
+              <button data-theme="dark"><i class="theme-preview dark-preview"></i><span>深色</span></button>
+              <button data-theme="system"><i class="theme-preview system-preview"></i><span>跟随系统</span></button>
+            </div></article>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="modalBackdrop">
+    <div class="modal" id="appModal">
+        <div class="modal-head"><div><h2 id="modalTitle">添加应用</h2><p id="modalSubtitle">配置应用的启动信息</p></div><button class="modal-close">×</button></div>
+      <div id="installedPanel" class="installed-panel">
+        <div class="search-wrap modal-search"><span>⌕</span><input id="installedSearch" placeholder="搜索已安装应用…" /></div>
+        <div class="installed-list" id="installedList"></div><div class="loading" id="installedLoading"><span></span> 正在读取 Windows 应用列表…</div>
+      </div>
+      <form id="customForm" class="form">
+        <label>应用名称<input name="name" required placeholder="例如：Visual Studio Code" /></label>
+        <label>程序路径<div class="input-action"><input name="path" required placeholder="C:\Program Files\App\app.exe" /><button type="button" id="browsePath">浏览</button></div></label>
+        <div class="form-row"><label>启动参数 <em>可选</em><input name="args" placeholder="--profile work" /></label><label>工作目录 <em>可选</em><input name="workingDir" placeholder="默认使用程序目录" /></label></div>
+        <div class="check-options">
+          <label class="check-row"><input name="enabled" type="checkbox" checked /> 包含在一键启动中</label>
+          <label class="check-row"><input name="runAsAdmin" type="checkbox" /> 以管理员身份启动此软件</label>
+        </div>
+        <div class="modal-actions"><button type="button" class="secondary modal-cancel">取消</button><button type="submit" class="primary">保存应用</button></div>
+      </form>
+    </div>
+  </div>
+  <div class="dialog-backdrop" id="promptBackdrop"><form class="prompt" id="promptForm"><h2 id="promptTitle">新建配置</h2><p id="promptText">为新场景起一个容易识别的名字</p><input id="promptInput" required /><div><button type="button" class="secondary" id="promptCancel">取消</button><button type="submit" class="primary">确认</button></div></form></div>
+  <div class="dialog-backdrop" id="messageBackdrop">
+    <div class="message-dialog">
+      <div class="message-symbol" id="messageSymbol">!</div>
+      <div class="message-content"><h2 id="messageTitle">提示</h2><p id="messageText"></p></div>
+      <div class="message-actions"><button class="secondary" id="messageCancel">取消</button><button class="primary" id="messageConfirm">确认</button></div>
+    </div>
+  </div>
+  <div class="toast" id="toast"></div>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
